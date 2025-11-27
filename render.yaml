@@ -1,0 +1,16 @@
+services:
+  - type: worker
+    name: discord-selfbot
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python main.py
+    envVars:
+      - key: DISCORD_TOKEN
+        sync: false
+      - key: SERVER1_CHANNEL_ID
+        value: "0"
+      - key: SERVER2_CHANNEL_ID  
+        value: "0"
+      - key: INTERVAL_SECONDS
+        value: "300"
