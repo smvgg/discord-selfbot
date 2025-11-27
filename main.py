@@ -19,13 +19,13 @@ class SimpleSelfBot:
         
         # Konfiguracja kanałów z indywidualnymi interwałami
         self.channels_config = {
-            # AD ZONE
+            # AD ZONE - 8 kanałów
             os.getenv('AD_ZONE_CHANNEL_1'): {
-                "name": "AD ZONE Partnerstwo",
+                "name": "AD ZONE Kanał 1",
                 "interval": int(os.getenv('AD_ZONE_CHANNEL_1_INTERVAL', 300))
             },
             os.getenv('AD_ZONE_CHANNEL_2'): {
-                "name": "AD ZONE J4J", 
+                "name": "AD ZONE Kanał 2", 
                 "interval": int(os.getenv('AD_ZONE_CHANNEL_2_INTERVAL', 300))
             },
             os.getenv('AD_ZONE_CHANNEL_3'): {
@@ -53,7 +53,7 @@ class SimpleSelfBot:
                 "interval": int(os.getenv('AD_ZONE_CHANNEL_8_INTERVAL', 300))
             },
             
-            # ZIMOWE REKLAMY
+            # ZIMOWE REKLAMY - 8 kanałów
             os.getenv('ZIMOWE_CHANNEL_1'): {
                 "name": "Zimowe Reklamy Kanał 1",
                 "interval": int(os.getenv('ZIMOWE_CHANNEL_1_INTERVAL', 300))
@@ -87,7 +87,7 @@ class SimpleSelfBot:
                 "interval": int(os.getenv('ZIMOWE_CHANNEL_8_INTERVAL', 300))
             },
             
-            # MAGICZNE REKLAMY
+            # MAGICZNE REKLAMY - 8 kanałów
             os.getenv('MAGICZNE_CHANNEL_1'): {
                 "name": "Magiczne Reklamy Kanał 1",
                 "interval": int(os.getenv('MAGICZNE_CHANNEL_1_INTERVAL', 300))
