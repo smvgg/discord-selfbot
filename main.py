@@ -16,14 +16,118 @@ app.router.add_get('/', health_check)
 class SimpleSelfBot:
     def __init__(self):
         self.token = os.getenv('DISCORD_TOKEN')
-        self.channel1_id = os.getenv('SERVER1_CHANNEL_ID')
-        self.channel2_id = os.getenv('SERVER2_CHANNEL_ID')
-        self.interval1 = int(os.getenv('INTERVAL_SECONDS_1', 300))
-        self.interval2 = int(os.getenv('INTERVAL_SECONDS_2', 300))
+        
+        # Konfiguracja kanałów z indywidualnymi interwałami
+        self.channels_config = {
+            # AD ZONE
+            os.getenv('AD_ZONE_CHANNEL_1'): {
+                "name": "AD ZONE Partnerstwo",
+                "interval": int(os.getenv('AD_ZONE_CHANNEL_1_INTERVAL', 300))
+            },
+            os.getenv('AD_ZONE_CHANNEL_2'): {
+                "name": "AD ZONE J4J", 
+                "interval": int(os.getenv('AD_ZONE_CHANNEL_2_INTERVAL', 300))
+            },
+            os.getenv('AD_ZONE_CHANNEL_3'): {
+                "name": "AD ZONE Kanał 3",
+                "interval": int(os.getenv('AD_ZONE_CHANNEL_3_INTERVAL', 300))
+            },
+            os.getenv('AD_ZONE_CHANNEL_4'): {
+                "name": "AD ZONE Kanał 4",
+                "interval": int(os.getenv('AD_ZONE_CHANNEL_4_INTERVAL', 300))
+            },
+            os.getenv('AD_ZONE_CHANNEL_5'): {
+                "name": "AD ZONE Kanał 5",
+                "interval": int(os.getenv('AD_ZONE_CHANNEL_5_INTERVAL', 300))
+            },
+            os.getenv('AD_ZONE_CHANNEL_6'): {
+                "name": "AD ZONE Kanał 6",
+                "interval": int(os.getenv('AD_ZONE_CHANNEL_6_INTERVAL', 300))
+            },
+            os.getenv('AD_ZONE_CHANNEL_7'): {
+                "name": "AD ZONE Kanał 7",
+                "interval": int(os.getenv('AD_ZONE_CHANNEL_7_INTERVAL', 300))
+            },
+            os.getenv('AD_ZONE_CHANNEL_8'): {
+                "name": "AD ZONE Kanał 8",
+                "interval": int(os.getenv('AD_ZONE_CHANNEL_8_INTERVAL', 300))
+            },
+            
+            # ZIMOWE REKLAMY
+            os.getenv('ZIMOWE_CHANNEL_1'): {
+                "name": "Zimowe Reklamy Kanał 1",
+                "interval": int(os.getenv('ZIMOWE_CHANNEL_1_INTERVAL', 300))
+            },
+            os.getenv('ZIMOWE_CHANNEL_2'): {
+                "name": "Zimowe Reklamy Kanał 2",
+                "interval": int(os.getenv('ZIMOWE_CHANNEL_2_INTERVAL', 300))
+            },
+            os.getenv('ZIMOWE_CHANNEL_3'): {
+                "name": "Zimowe Reklamy Kanał 3",
+                "interval": int(os.getenv('ZIMOWE_CHANNEL_3_INTERVAL', 300))
+            },
+            os.getenv('ZIMOWE_CHANNEL_4'): {
+                "name": "Zimowe Reklamy Kanał 4",
+                "interval": int(os.getenv('ZIMOWE_CHANNEL_4_INTERVAL', 300))
+            },
+            os.getenv('ZIMOWE_CHANNEL_5'): {
+                "name": "Zimowe Reklamy Kanał 5",
+                "interval": int(os.getenv('ZIMOWE_CHANNEL_5_INTERVAL', 300))
+            },
+            os.getenv('ZIMOWE_CHANNEL_6'): {
+                "name": "Zimowe Reklamy Kanał 6",
+                "interval": int(os.getenv('ZIMOWE_CHANNEL_6_INTERVAL', 300))
+            },
+            os.getenv('ZIMOWE_CHANNEL_7'): {
+                "name": "Zimowe Reklamy Kanał 7",
+                "interval": int(os.getenv('ZIMOWE_CHANNEL_7_INTERVAL', 300))
+            },
+            os.getenv('ZIMOWE_CHANNEL_8'): {
+                "name": "Zimowe Reklamy Kanał 8",
+                "interval": int(os.getenv('ZIMOWE_CHANNEL_8_INTERVAL', 300))
+            },
+            
+            # MAGICZNE REKLAMY
+            os.getenv('MAGICZNE_CHANNEL_1'): {
+                "name": "Magiczne Reklamy Kanał 1",
+                "interval": int(os.getenv('MAGICZNE_CHANNEL_1_INTERVAL', 300))
+            },
+            os.getenv('MAGICZNE_CHANNEL_2'): {
+                "name": "Magiczne Reklamy Kanał 2",
+                "interval": int(os.getenv('MAGICZNE_CHANNEL_2_INTERVAL', 300))
+            },
+            os.getenv('MAGICZNE_CHANNEL_3'): {
+                "name": "Magiczne Reklamy Kanał 3",
+                "interval": int(os.getenv('MAGICZNE_CHANNEL_3_INTERVAL', 300))
+            },
+            os.getenv('MAGICZNE_CHANNEL_4'): {
+                "name": "Magiczne Reklamy Kanał 4",
+                "interval": int(os.getenv('MAGICZNE_CHANNEL_4_INTERVAL', 300))
+            },
+            os.getenv('MAGICZNE_CHANNEL_5'): {
+                "name": "Magiczne Reklamy Kanał 5",
+                "interval": int(os.getenv('MAGICZNE_CHANNEL_5_INTERVAL', 300))
+            },
+            os.getenv('MAGICZNE_CHANNEL_6'): {
+                "name": "Magiczne Reklamy Kanał 6",
+                "interval": int(os.getenv('MAGICZNE_CHANNEL_6_INTERVAL', 300))
+            },
+            os.getenv('MAGICZNE_CHANNEL_7'): {
+                "name": "Magiczne Reklamy Kanał 7",
+                "interval": int(os.getenv('MAGICZNE_CHANNEL_7_INTERVAL', 300))
+            },
+            os.getenv('MAGICZNE_CHANNEL_8'): {
+                "name": "Magiczne Reklamy Kanał 8",
+                "interval": int(os.getenv('MAGICZNE_CHANNEL_8_INTERVAL', 300))
+            }
+        }
+        
+        # Usuń puste kanały (te których nie ustawiono)
+        self.active_channels = {channel_id: config for channel_id, config in self.channels_config.items() if channel_id}
         
         self.session = None
-        self.counter1 = 1
-        self.counter2 = 1
+        self.counters = {channel_id: 1 for channel_id in self.active_channels}
+        self.last_message = {channel_id: 0 for channel_id in self.active_channels}
         
     async def send_message(self, channel_id, content):
         if not self.session:
@@ -37,45 +141,46 @@ class SimpleSelfBot:
         data = {'content': content}
         
         try:
-            print(f"📤 Próba wysłania: {content}")
+            print(f"📤 Próba wysłania: {content} na {self.active_channels[channel_id]['name']}")
             async with self.session.post(url, json=data) as response:
                 if response.status == 200:
-                    print(f"✅ Wiadomość wysłana na kanał {channel_id}")
+                    print(f"✅ Wiadomość wysłana na {self.active_channels[channel_id]['name']}")
                     return True
                 else:
                     text = await response.text()
-                    print(f"❌ Błąd {response.status}: {text}")
+                    print(f"❌ Błąd {response.status} na {self.active_channels[channel_id]['name']}: {text}")
                     return False
         except Exception as e:
-            print(f"❌ Błąd wysyłania: {e}")
+            print(f"❌ Błąd wysyłania na {self.active_channels[channel_id]['name']}: {e}")
             return False
     
     async def run_bot(self):
-        print("🟡 Uruchamianie selfbota...")
-        print(f"📝 Kanał 1: {self.channel1_id}, interwał: {self.interval1}s")
-        print(f"📝 Kanał 2: {self.channel2_id}, interwał: {self.interval2}s")
+        print("🟡 Uruchamianie selfbota z indywidualnymi interwałami dla każdego kanału...")
+        
+        # Logowanie konfiguracji
+        for channel_id, config in self.active_channels.items():
+            print(f"📝 {config['name']}: co {config['interval']}s")
         
         while True:
             try:
-                current_time = datetime.now().strftime('%H:%M:%S')
+                current_time = time.time()
                 
-                # Serwer 1
-                if self.channel1_id:
-                    await self.send_message(
-                        self.channel1_id, 
-                        f"Auto wiadomość #{self.counter1} | Serwer 1 | {current_time}"
-                    )
-                    self.counter1 += 1
-                    await asyncio.sleep(self.interval1)
-                
-                # Serwer 2
-                if self.channel2_id:
-                    await self.send_message(
-                        self.channel2_id,
-                        f"Auto wiadomość #{self.counter2} | Serwer 2 | {current_time}"
-                    )
-                    self.counter2 += 1
-                    await asyncio.sleep(self.interval2)
+                for channel_id, config in self.active_channels.items():
+                    # Sprawdź czy czas na wiadomość dla tego kanału
+                    if (current_time - self.last_message[channel_id]) >= config['interval']:
+                        
+                        success = await self.send_message(
+                            channel_id, 
+                            f"Magiczne Reklamy Test #{self.counters[channel_id]}"
+                        )
+                        
+                        if success:
+                            self.counters[channel_id] += 1
+                            self.last_message[channel_id] = current_time
+                            print(f"⏳ {config['name']}: Następna wiadomość za {config['interval']}s")
+                    
+                # Sprawdź co 10 sekund
+                await asyncio.sleep(10)
                     
             except Exception as e:
                 print(f"❌ Główny błąd: {e}")
