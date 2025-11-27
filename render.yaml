@@ -12,5 +12,7 @@ services:
         value: "0"
       - key: SERVER2_CHANNEL_ID  
         value: "0"
-      - key: INTERVAL_SECONDS
+      - key: INTERVAL_SECONDS_1
         value: "300"
+      - key: INTERVAL_SECONDS_2
+        value: "600"
